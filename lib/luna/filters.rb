@@ -10,7 +10,9 @@ module Luna
 
     TIME_METHODS.each do |k, v|
       if v.is_a?(Symbol)
-        alias_method k, v
+        then alias_method(
+          k, v
+        )
       else
         define_method k do |i|
           i.strftime(v)
@@ -18,18 +20,56 @@ module Luna
       end
     end
 
+    # -------------------------------------------------------------------------
+
+    def num_as_color(num)
+      num = Integer  num
+      if num > 4 then "green"
+        elsif num == 4 then "blue"
+        elsif num == 3 then "yellow"
+        else "red"
+      end
+    end
+
+    # -------------------------------------------------------------------------
+
+    def num_as_word(num)
+      num = Integer num
+      if num > 4 then "Great"
+        elsif num == 4 then "Good"
+        elsif num == 3 then "Alright"
+        else "Bad"
+      end
+    end
+
+    # -------------------------------------------------------------------------
+    # Strip out the HTML and the trailing slash because they aren't really
+    # wanted when I output my site, but you don't need to use this if you do
+    # not wish to.  It's mostly a preference helper.
+    # -------------------------------------------------------------------------
+
     def pretty_url(out)
-      out.gsub(/(index)?\.html/, "").gsub(/\/$/, "")
+      if (out = out.gsub(/(index)?\.html/, "").gsub(/\/$/, "")) == ""
+        then "/" else out
+      end
+    end
+
+    # -------------------------------------------------------------------------
+
+    def tag_url(tag, site = @context.registers[:site])
+      pretty_url(
+        site.config["tag_permalink"].sub(":tag", tag).gsub(/\A(?!\/)/, "/")
+      )
     end
 
     # -------------------------------------------------------------------------
 
     def pretty_tag_links(tags, site = @context.registers[:site])
-      path = site.config["tags"]["path"]
-
       to_sentence(
         tags.map do |t|
-          TAG_ANCHOR % [pretty_url(path.sub(":tag", t)), t]
+          TAG_ANCHOR % [
+            pretty_url(site.config["tag_permalink"].sub(":tag", t)), t
+          ]
         end
       )
     end
@@ -37,8 +77,9 @@ module Luna
     # -------------------------------------------------------------------------
 
     def strip_end_punctuation(input)
-      # There could be some missing out.
-      input.gsub(/(\.|!|\?|\?!|!\?)$/, "")
+      input.gsub(
+        /(\.|!|\?|\?!|!\?)$/, ""
+      )
     end
 
     # -------------------------------------------------------------------------
@@ -48,7 +89,8 @@ module Luna
         if w =~ /\A[A-Z]/ || w.length < 2 then w else
           NO_CAPS.include?(w.downcase) ? w.downcase : w.capitalize
         end
-      end.join
+      end.\
+      join
     end
 
     # -------------------------------------------------------------------------
@@ -89,4 +131,6 @@ module Luna
   end
 end
 
-Liquid::Template.register_filter(Luna::Filters)
+Liquid::Template.register_filter(
+  Luna::Filters
+)
