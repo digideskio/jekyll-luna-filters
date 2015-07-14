@@ -56,7 +56,7 @@ describe Jekyll::Luna::Filters do
   end
 
   context do
-    let(:site) do
+    let :site do
       OpenStruct.new({
         :config => {
           "tag_permalink" => "/tag/:tag"
@@ -64,9 +64,23 @@ describe Jekyll::Luna::Filters do
       })
     end
 
+    let :alt_site do
+      OpenStruct.new({
+        :config => {
+          "tag_permalink" => "tag/:tag"
+        }
+      })
+    end
+
     context :tag_url do
       it "converts converts tags to a url" do
         expect(tag_url("hello", site)).to eq(
+          %Q{<a class="tag" href="/tag/hello">hello</a>}
+        )
+      end
+
+      it "makes sure it's a absolute path" do
+        expect(tag_url("hello", alt_site)).to eq(
           %Q{<a class="tag" href="/tag/hello">hello</a>}
         )
       end

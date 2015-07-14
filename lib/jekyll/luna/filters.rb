@@ -50,17 +50,21 @@ module Jekyll
       end
 
       def tag_url(tag, site = @context.registers[:site])
+        template = "/#{site.config["tag_permalink"].gsub(
+          /\A\//, ""
+        )}"
+
         TAG_ANCHOR % [
-          pretty_url(site.config["tag_permalink"].sub(":tag", tag)), tag
+          pretty_url(template.sub(":tag", tag)), tag
         ]
       end
 
       def pretty_tag_links(tags, site = @context.registers[:site])
         to_sentence(
           tags.map do |t|
-            TAG_ANCHOR % [
-              pretty_url(site.config["tag_permalink"].sub(":tag", t)), t
-            ]
+            tag_url(
+              t, site
+            )
           end
         )
       end
