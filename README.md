@@ -7,5 +7,5 @@ truncation and others for you to use in your liquid template.
 ## Installing
 
 ```
-gem install jekyll-luna-filters
+gem "jekyll-luna-filters", :github => "envygeeks/ruby-jekyll-luna-filters"
 ```
